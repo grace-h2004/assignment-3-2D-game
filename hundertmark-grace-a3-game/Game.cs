@@ -16,15 +16,15 @@ namespace MohawkGame2D
 
         Balloon balloon = new Balloon();
 
-        Block blocks = new Block();
-        Vector3[] positions =
-        [
-            new Vector3()
-        ];
+        Block[] blocks =
+        {
+            new Block(new Vector2(800, 0), 120),
+            new Block(new Vector2(1200, 0), 120)
+        };
 
         Color sky = new Color(0, 250, 255);
 
-        int[] radii;
+        System.Random random = new System.Random();
         /// <summary>
         ///     Setup runs once before the game loop begins.
         /// </summary>
@@ -33,13 +33,12 @@ namespace MohawkGame2D
             Window.SetTitle("Balloon Dodge");
             Window.SetSize(800, 600);
 
-            radii = new int[positions.Length];
-            for (int i = 0; i < radii.Length; i++)
+            for (int i = 0; i < blocks.Length; i++)
             {
-                radii[i] = Random.Integer(10, 50);
+                int Ysize = random.Next(0, Window.Height - blocks[i].gap);
+                blocks[i].size.Y = Ysize;
             }
         }
-
         /// <summary>
         ///     Update runs every frame.
         /// </summary>
@@ -48,14 +47,13 @@ namespace MohawkGame2D
             // Reset background
             Window.ClearBackground(sky);
 
-            balloon.DrawBalloon();
-
-            blocks.DrawBlock();
-
-
-
+            for (int i = 0; i < blocks.Length; i++)
+            {
+                blocks[i].Update();
+            }
+            balloon.Update(blocks);
         }
-        
+
     }
 
 }

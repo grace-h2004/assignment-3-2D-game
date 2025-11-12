@@ -19,6 +19,8 @@ namespace MohawkGame2D
 
         Color balloonColor = new Color(191, 3, 3);
 
+        bool badEnd = false;
+
         public Balloon() {
             // Set up variables once game is ready
             position = new(Window.Width / 1, 50);
@@ -36,12 +38,6 @@ namespace MohawkGame2D
 
         public void DrawBalloon()
         {
-            
-           
-            // Run game logic
-            ApplyGravity();
-            ConstrainBalloonToScreen();
-
             //gen draw config
             Draw.LineColor = Color.Black;
             Draw.LineSize = 1;
@@ -50,14 +46,23 @@ namespace MohawkGame2D
             Draw.FillColor = balloonColor;
             Draw.Ellipse(position.X, position.Y, 60, 60);
 
-            GetPlayerInput();
-
+            if(badEnd == true)
+            {
+                Window.ClearBackground(Color.Red);
+            }
         }
-
+        public void Update(Block[] blocks)
+        {
+            DrawBalloon();
+            ApplyGravity();
+            ConstrainBalloonToScreen();
+            GetPlayerInput();
+            Collision(blocks);
+        }
         void ApplyGravity()
         {
-            velocity += new Vector2(0, 10) * Time.DeltaTime;
-            position += velocity;
+            velocity += new Vector2(0, 400) * Time.DeltaTime;
+            position += velocity * Time.DeltaTime;
         }
         void ConstrainBalloonToScreen()
         {
@@ -71,17 +76,51 @@ namespace MohawkGame2D
 
         void GetPlayerInput()
         {
-            
-            Vector2 input = Vector2.Zero;
+           
                         // balloon move up
             if (Input.IsKeyboardKeyDown(KeyboardInput.Up) || Input.IsKeyboardKeyDown(KeyboardInput.Space))
             {
-                input.Y -= 2;
-                
+                velocity.Y = -200;
             }
             
         }
 
+        void Collision(Block[] blocks)
+        {
+            float playerTop = position.Y;
+            float playerBottom = position.Y + radius;
+            float playerLeft = position.X;
+            float playerRight = position.X + radius;
+            //hit box collision
+            for (int i = 0; i < blocks.Length; i++)
+            {
+                Block block = blocks[i];
 
+                float blockTop = block.position.Y;
+                float blockBottom = block.position.Y + block.size.Y;
+                float blockLeft = block.position.X;
+                float blockRight = block.position.X + block.size.X;
+
+                float bottomBlockTop = block.size.Y + block.gap;
+                float bottomBlockBottom = block.size.Y + block.gap + 600;
+                float bottomBlockLeft = block.position.X;
+                float bottomBlockRight = block.position.X + block.size.X;
+
+                bool isColliding = false;
+                if(playerRight > blockLeft && playerLeft < blockRight && playerBottom > blockTop && playerTop < blockBottom)
+                {
+                    isColliding = true;
+                }
+                if (playerRight > bottomBlockLeft && playerLeft < bottomBlockRight && playerBottom > bottomBlockTop && playerTop < bottomBlockBottom)
+                {
+                    isColliding = true;
+                }
+                if (isColliding)
+                {
+                    //end game bad
+                    badEnd = true;
+                }
+            }
+        }
     }
 }
