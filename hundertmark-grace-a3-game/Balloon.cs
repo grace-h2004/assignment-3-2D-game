@@ -12,7 +12,6 @@ namespace MohawkGame2D
     public class Balloon
     {
         //variables
-        
         public Vector2 position;
         public Vector2 velocity;
         public float radius = 35;
@@ -21,11 +20,9 @@ namespace MohawkGame2D
 
         bool badEnd = false;
 
-        public Balloon() {
-            // Set up variables once game is ready
+        public Balloon() 
+        {
             position = new(Window.Width / 1, 50);
-
-            
         }
 
         public Balloon(Vector2 position) 
@@ -33,9 +30,7 @@ namespace MohawkGame2D
             this.position = position; 
         }
 
-        
-
-
+        //draw balloon
         public void DrawBalloon()
         {
             //gen draw config
@@ -51,6 +46,8 @@ namespace MohawkGame2D
                 Window.ClearBackground(Color.Red);
             }
         }
+
+        //update game for balloon
         public void Update(Block[] blocks)
         {
             DrawBalloon();
@@ -59,11 +56,15 @@ namespace MohawkGame2D
             GetPlayerInput();
             Collision(blocks);
         }
+
+        //adds gravity to balloon
         void ApplyGravity()
         {
-            velocity += new Vector2(0, 400) * Time.DeltaTime;
+            velocity += new Vector2(0, 500) * Time.DeltaTime;
             position += velocity * Time.DeltaTime;
         }
+
+        //makes balloon stay on screen
         void ConstrainBalloonToScreen()
         {
             if (position.Y + radius >= Window.Height)
@@ -74,17 +75,19 @@ namespace MohawkGame2D
             }
         }
 
+        //lets player make balloon jump
         void GetPlayerInput()
         {
            
                         // balloon move up
             if (Input.IsKeyboardKeyDown(KeyboardInput.Up) || Input.IsKeyboardKeyDown(KeyboardInput.Space))
             {
-                velocity.Y = -200;
+                velocity.Y = -250;
             }
             
         }
 
+        //adds collision between balloon and blocks
         void Collision(Block[] blocks)
         {
             float playerTop = position.Y;
